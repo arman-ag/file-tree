@@ -1,22 +1,40 @@
 import { FormEvent, useState } from 'react';
 import { FaFolder } from 'react-icons/fa';
-export const FolderItem = () => {
-  const [name, setName] = useState('');
+import { FileItem } from './FileItem';
+export const FolderItem = ({ folderName, setName, nestedItems }) => {
   const [choseName, setChoseName] = useState(true);
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setChoseName(false);
+    setName('');
   };
   return (
-    <button className='flex'>
+    <div className='flex'>
       <FaFolder className='mr-2' />
-      {choseName ? (
+      {!(folderName.length > 0) ? (
         <form onSubmit={(event) => submit(event)}>
-          <input value={name} onChange={(e) => setName(e.target.value)} />
+          <input onChange={(e) => setName(e.target.value)} />
         </form>
       ) : (
-        <span>{name}</span>
+        <div>
+          <span>{folderName}</span>
+          {nestedItems &&
+            nestedItems.map((item, index) => {
+              if (item.type === 'folder') {
+                return (
+                  <FolderItem
+                    nestedItems={item.nestedItems}
+                    folderName={item.name}
+                    setName={setName}
+                    key={index}
+                  />
+                );
+              } else {
+                return <FileItem fileName={item.name} key={index} />;
+              }
+            })}
+        </div>
       )}
-    </button>
+    </div>
   );
 };
