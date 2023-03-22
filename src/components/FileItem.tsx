@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { AiOutlineFile } from 'react-icons/ai';
 import { DiJavascript1 } from 'react-icons/di';
-export const File = () => {
+export const FileItem = () => {
   const [name, setName] = useState('');
   const [choseName, setChoseName] = useState(true);
   const submit = (e: FormEvent<HTMLFormElement>) => {
