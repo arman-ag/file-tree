@@ -1,8 +1,15 @@
 import { findValue } from '@/common/findValue';
-import { FormEvent, useState } from 'react';
+import { FormEvent, MouseEvent, useState } from 'react';
 import { AiOutlineFile } from 'react-icons/ai';
+import { FileItemType } from './types';
 
-export const FileItem = ({ fileName, setSelectedItem, tree, setTree, id }) => {
+export const FileItem = ({
+  fileName,
+  setSelectedItem,
+  tree,
+  setTree,
+  id,
+}: FileItemType) => {
   const [name, setName] = useState('');
   const [choseName, setChoseName] = useState(true);
   const submit = (e: FormEvent<HTMLFormElement>) => {
@@ -10,21 +17,27 @@ export const FileItem = ({ fileName, setSelectedItem, tree, setTree, id }) => {
     setChoseName(false);
     const result = findValue(tree, id);
     result.name = name;
-    console.log(tree);
     setTree([...tree]);
     setName('');
   };
-  const addItem = (e) => {
+  const addItem = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setSelectedItem(id);
   };
 
   return (
-    <div onClick={(e) => addItem(e)} className='flex items-center'>
-      <AiOutlineFile className='mr-1' />
+    <div
+      onClick={(e) => addItem(e)}
+      className='flex items-center cursor-pointer  ml-4'
+    >
+      <AiOutlineFile className='mr-1 text-lg' />
       {choseName ? (
         <form onSubmit={(event) => submit(event)}>
-          <input value={name} onChange={(e) => setName(e.target.value)} />
+          <input
+            className='w-20 rounded-sm	ml-1 '
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </form>
       ) : (
         <span>{fileName}</span>

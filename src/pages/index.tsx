@@ -1,13 +1,20 @@
-// @ts-ignore
 import { findValue } from '@/common/findValue';
 import { FileItem } from '@/components/FileItem';
 import { FolderItem } from '@/components/FolderItem';
 import { useState } from 'react';
-import { BiFolderPlus } from 'react-icons/bi';
-import { RiDeleteBin2Line, RiFileAddLine } from 'react-icons/ri';
-
-const index = () => {
-  const [tree, setTree] = useState([
+import {
+  AiOutlineDelete,
+  AiOutlineFileAdd,
+  AiOutlineFolderAdd,
+} from 'react-icons/ai';
+interface nestedListType {
+  type: string;
+  id: number;
+  name: string;
+  nestedItems?: nestedListType[] | undefined;
+}
+export default function Home() {
+  const [tree, setTree] = useState<nestedListType[]>([
     {
       type: 'folder',
       id: 0,
@@ -17,13 +24,12 @@ const index = () => {
   ]);
   const [selectedItem, setSelectedItem] = useState<number>(0);
   const [id, setId] = useState<number>(1);
-  console.log(selectedItem);
 
   //add Item to file tree
   const addItem = (type: string) => {
     const result = findValue(tree, selectedItem);
     if (type === 'folder') {
-      result?.nestedItems.push({
+      result?.nestedItems?.push({
         type,
         id,
         name: '',
@@ -31,7 +37,7 @@ const index = () => {
       });
       setTree([...tree]);
     } else {
-      result?.nestedItems.push({
+      result?.nestedItems?.push({
         type,
         id,
         name: '',
@@ -41,52 +47,61 @@ const index = () => {
     setId((prevId) => prevId + 1);
   };
 
-  const filterList = (list, id) => {
+  const filterList = (list: Array<nestedListType>, id: number) => {
     return list
       ?.map((item) => {
-        console.log({ ...item });
         return { ...item };
       })
       ?.filter((item) => {
         if ('nestedItems' in item) {
-          item.nestedItems = filterList(item.nestedItems, id);
+          item.nestedItems = filterList(item?.nestedItems, id);
         }
         return item.id !== id;
       });
   };
-
+  //remove item
   const removeItem = () => {
-    const res = filterList(tree, selectedItem);
-
-    console.log('result', res);
-    setTree([...res]);
+    if (selectedItem === 0) {
+      alert('You cant remove main folder!!');
+    } else {
+      const res = filterList(tree, selectedItem);
+      setTree([...res]);
+    }
   };
-  console.log('tree', tree);
 
   return (
     <>
       <div className='w-5/12 h-screen m-auto  bg-gray-200'>
         <div>
-          <div className='bg-gray-300  m-auto flex align-baseline justify-between'>
-            <span className='text-sm font-bold'>Menu</span>
+          <div className='bg-gray-300 px-2 h-10  m-auto flex items-center align-baseline justify-between'>
+            <span className='text-lg '>Menu</span>
             <div>
-              <button onClick={() => addItem('folder')}>
-                <BiFolderPlus />
+              <button
+                className='active:bg-slate-400 rounded-full    '
+                onClick={() => addItem('folder')}
+              >
+                <AiOutlineFolderAdd className=' text-2xl' />
               </button>
-              <button onClick={() => addItem('file')}>
-                <RiFileAddLine />
+              <button
+                className='active:bg-slate-400 rounded-full    '
+                onClick={() => addItem('file')}
+              >
+                <AiOutlineFileAdd className=' text-2xl' />
               </button>
-              <button onClick={removeItem}>
-                <RiDeleteBin2Line />
+              <button
+                className='active:bg-slate-400 rounded-full    '
+                onClick={removeItem}
+              >
+                <AiOutlineDelete className=' text-2xl' />
               </button>
             </div>
           </div>
         </div>
-        <div>
+        <div className='mt-2 ml-1'>
           {tree.map((item, index) => {
             if (item?.type === 'folder') {
               return (
-                <div className='flex' key={index}>
+                <div key={index}>
                   <FolderItem
                     tree={tree}
                     setTree={setTree}
@@ -99,14 +114,15 @@ const index = () => {
               );
             } else {
               return (
-                <FileItem
-                  tree={tree}
-                  setTree={setTree}
-                  id={item?.id}
-                  setSelectedItem={setSelectedItem}
-                  fileName={item?.name}
-                  key={index}
-                />
+                <div key={index}>
+                  <FileItem
+                    tree={tree}
+                    setTree={setTree}
+                    id={item?.id}
+                    setSelectedItem={setSelectedItem}
+                    fileName={item?.name}
+                  />
+                </div>
               );
             }
           })}
@@ -114,5 +130,4 @@ const index = () => {
       </div>
     </>
   );
-};
-export default index;
+}

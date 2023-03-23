@@ -1,9 +1,10 @@
 import { findValue } from '@/common/findValue';
-import { FormEvent, useState } from 'react';
-import { FaFolder } from 'react-icons/fa';
+import { FormEvent, MouseEvent, useState } from 'react';
+import { AiOutlineFolder, AiOutlineFolderOpen } from 'react-icons/ai';
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from 'react-icons/md';
-
 import { FileItem } from './FileItem';
+import { FolderItemType } from './types';
+
 export const FolderItem = ({
   id,
   folderName,
@@ -11,7 +12,7 @@ export const FolderItem = ({
   setSelectedItem,
   tree,
   setTree,
-}) => {
+}: FolderItemType) => {
   const [choseName, setChoseName] = useState(true);
   const [name, setName] = useState(folderName);
   const [show, setShow] = useState(true);
@@ -24,42 +25,50 @@ export const FolderItem = ({
     setTree([...tree]);
     setName('');
   };
-  const addItem = (e) => {
+  const addItem = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setSelectedItem(id);
   };
   return (
-    <div className='relative '>
-      <div onClick={(e) => addItem(e)} className='flex items-center  ml-9'>
-        <div className='absolute top-1.5 left-0 flex active:bg-red-800 focus:bg-red-800 cursor-pointer'>
+    <div onClick={(e) => addItem(e)} className='relative '>
+      <div className='flex items-center  ml-9 '>
+        <div className='absolute top-1 left-0 flex cursor-pointer  '>
           <button onClick={() => setShow((Condition) => !Condition)}>
             {show ? <MdKeyboardArrowDown /> : <MdKeyboardArrowRight />}
           </button>
-          <FaFolder className='mr-2' />
+          {show ? (
+            <AiOutlineFolderOpen className='mr-2 text-xl	' />
+          ) : (
+            <AiOutlineFolder className='mr-2 text-xl	' />
+          )}
         </div>
         {choseName && folderName.length === 0 ? (
           <form onSubmit={(event) => submit(event)}>
-            <input value={name} onChange={(e) => setName(e.target.value)} />
+            <input
+              className='w-20 rounded-sm	ml-1 '
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </form>
         ) : (
           <div>
-            <span className='active:bg-red-800 focus:bg-red-800 cursor-pointer'>
-              {folderName}
-            </span>
+            <span className=' cursor-pointer ml-1'>{folderName}</span>
             <div className={`${show ? 'block' : 'hidden'}`}>
               {nestedItems &&
                 nestedItems.map((item, index) => {
                   if (item.type === 'folder') {
                     return (
-                      <FolderItem
-                        tree={tree}
-                        setTree={setTree}
-                        id={item?.id}
-                        setSelectedItem={setSelectedItem}
-                        nestedItems={item?.nestedItems}
-                        folderName={item?.name}
-                        key={index}
-                      />
+                      <div key={index}>
+                        <FolderItem
+                          tree={tree}
+                          setTree={setTree}
+                          id={item?.id}
+                          setSelectedItem={setSelectedItem}
+                          nestedItems={item?.nestedItems}
+                          folderName={item?.name}
+                          key={index}
+                        />
+                      </div>
                     );
                   } else {
                     return (

@@ -1,6 +1,15 @@
 //find selected file or folder
+interface nestedListType {
+  type?: string;
+  id?: number;
+  name?: string;
+  nestedItems?: nestedListType[];
+}
 
-export const findValue = (arr, itemId: number) => {
+export const findValue = (
+  arr: nestedListType[],
+  itemId: number
+): nestedListType => {
   for (const obj of arr) {
     if (obj.id === itemId) {
       return obj;
@@ -13,21 +22,3 @@ export const findValue = (arr, itemId: number) => {
     }
   }
 };
-
-let bigArray = [
-  {
-    type: 'folder',
-    name: 'as',
-    id: 1,
-    nestedItems: [
-      { type: 'file', name: 'jsc', id: 2 },
-      {
-        id: 3,
-        type: 'folder',
-        name: 'asd',
-        nestedItems: [{ type: 'file', name: 'sdasd', id: 5 }],
-      },
-    ],
-  },
-  { type: 'file', name: 'casc', id: 4 },
-];
