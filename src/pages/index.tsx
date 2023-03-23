@@ -41,30 +41,23 @@ const index = () => {
     setId((prevId) => prevId + 1);
   };
 
-  // const filterdList = (arr, id) => {
-  //   console.log({ id });
-  //   const resultList = arr.filter((obj) => {
-  //     if (obj.id !== id) {
-  //       return obj;
-  //     }
-  //     if (obj.nestedItems) {
-  //       let result = filterdList(obj.nestedItems, id);
-  //       return result;
-  //     }
-  //   });
-  //   return resultList;
-  // };
+  const filterList = (list, id) => {
+    return list
+      ?.map((item) => {
+        console.log({ ...item });
+        return { ...item };
+      })
+      ?.filter((item) => {
+        if ('nestedItems' in item) {
+          item.nestedItems = filterList(item.nestedItems, id);
+        }
+        return item.id !== id;
+      });
+  };
 
   const removeItem = () => {
-    // const res = filterdList(tree, selectedItem);
-    const res = tree.map((element) => {
-      return {
-        ...element,
-        nestedItems: element.nestedItems.filter(
-          (item) => item.id === selectedItem
-        ),
-      };
-    });
+    const res = filterList(tree, selectedItem);
+
     console.log('result', res);
     setTree([...res]);
   };
@@ -111,7 +104,6 @@ const index = () => {
                   setTree={setTree}
                   id={item?.id}
                   setSelectedItem={setSelectedItem}
-                  nestedItems={item?.nestedItems}
                   fileName={item?.name}
                   key={index}
                 />

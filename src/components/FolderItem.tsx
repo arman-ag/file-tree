@@ -31,7 +31,7 @@ export const FolderItem = ({
   return (
     <div className='relative '>
       <div onClick={(e) => addItem(e)} className='flex items-center  ml-9'>
-        <div className='absolute top-1.5 left-0 flex'>
+        <div className='absolute top-1.5 left-0 flex active:bg-red-800 focus:bg-red-800 cursor-pointer'>
           <button onClick={() => setShow((Condition) => !Condition)}>
             {show ? <MdKeyboardArrowDown /> : <MdKeyboardArrowRight />}
           </button>
@@ -43,7 +43,9 @@ export const FolderItem = ({
           </form>
         ) : (
           <div>
-            <span>{folderName}</span>
+            <span className='active:bg-red-800 focus:bg-red-800 cursor-pointer'>
+              {folderName}
+            </span>
             <div className={`${show ? 'block' : 'hidden'}`}>
               {nestedItems &&
                 nestedItems.map((item, index) => {
@@ -66,7 +68,6 @@ export const FolderItem = ({
                         setTree={setTree}
                         id={item?.id}
                         setSelectedItem={setSelectedItem}
-                        nestedItems={item?.nestedItems}
                         fileName={item?.name}
                         key={index}
                       />
