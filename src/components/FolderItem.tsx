@@ -1,19 +1,30 @@
 import { FormEvent, useState } from 'react';
 import { FaFolder } from 'react-icons/fa';
 import { FileItem } from './FileItem';
-export const FolderItem = ({ folderName, setName, nestedItems }) => {
+export const FolderItem = ({
+  id,
+  folderName,
+  nestedItems,
+  setSelectedItem,
+}) => {
   const [choseName, setChoseName] = useState(true);
+  const [name, setName] = useState('');
+
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setChoseName(false);
     setName('');
   };
+  const addItem = (e) => {
+    e.stopPropagation();
+    setSelectedItem(id);
+  };
   return (
-    <div className='flex'>
+    <div onClick={(e) => addItem(e)} className='flex'>
       <FaFolder className='mr-2' />
       {!(folderName.length > 0) ? (
         <form onSubmit={(event) => submit(event)}>
-          <input onChange={(e) => setName(e.target.value)} />
+          <input value={name} onChange={(e) => setName(e.target.value)} />
         </form>
       ) : (
         <div>
@@ -23,6 +34,8 @@ export const FolderItem = ({ folderName, setName, nestedItems }) => {
               if (item.type === 'folder') {
                 return (
                   <FolderItem
+                    id={item.id}
+                    setSelectedItem={setSelectedItem}
                     nestedItems={item.nestedItems}
                     folderName={item.name}
                     setName={setName}
@@ -30,7 +43,13 @@ export const FolderItem = ({ folderName, setName, nestedItems }) => {
                   />
                 );
               } else {
-                return <FileItem fileName={item.name} key={index} />;
+                return (
+                  <FileItem
+                    setSelectedItem={setSelectedItem}
+                    fileName={item.name}
+                    key={index}
+                  />
+                );
               }
             })}
         </div>

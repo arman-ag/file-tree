@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { AiOutlineFile } from 'react-icons/ai';
 import { DiJavascript1 } from 'react-icons/di';
-export const FileItem = ({ fileName }) => {
+export const FileItem = ({ fileName, setSelectedItem }) => {
   const [name, setName] = useState('');
   const [choseName, setChoseName] = useState(true);
   const submit = (e: FormEvent<HTMLFormElement>) => {
@@ -10,9 +10,13 @@ export const FileItem = ({ fileName }) => {
     setTree((items) => items);
     setName('');
   };
+  const addItem = (e) => {
+    e.stopPropagation();
+    setSelectedItem(nestedItems.id);
+  };
 
   return (
-    <div>
+    <div onClick={(e) => addItem(e)}>
       {!(fileName.length > 0) ? (
         <div className='flex items-baseline'>
           <AiOutlineFile className='mr-2' />
