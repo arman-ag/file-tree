@@ -1,3 +1,5 @@
+// @ts-ignore
+import { findValue } from '@/common/findValue';
 import { FileItem } from '@/components/FileItem';
 import { FolderItem } from '@/components/FolderItem';
 import { useState } from 'react';
@@ -23,41 +25,40 @@ const index = () => {
     { type: 'file', name: 'casc', id: 4 },
   ];
 
-  const [tree, setTree] = useState(bigArray);
+  const [tree, setTree] = useState([
+    {
+      type: 'folder',
+      id: 0,
+      name: 'main',
+      nestedItems: [],
+    },
+  ]);
   const [selectedItem, setSelectedItem] = useState<number>(0);
-  console.log(selectedItem);
+  const [id, setId] = useState<number>(1);
 
-  const findValue = (arr, val) => {
-    for (const obj of arr) {
-      if (obj.id === val) {
-        return obj;
-      }
-      if (obj.nestedItems) {
-        let result = findValue(obj.nestedItems, val);
-        if (result) {
-          return result;
-        }
-      }
-    }
-  };
-
+  //add Item to file tree
   const addItem = (type: string) => {
     const result = findValue(tree, selectedItem);
     if (type === 'folder') {
       result?.nestedItems.push({
         type,
-        name: 'yesss',
+        id,
+        name: '',
         nestedItems: [],
       });
       setTree([...tree]);
     } else {
       result?.nestedItems.push({
         type,
-        name: 'yesss',
+        id,
+        name: '',
       });
       setTree([...tree]);
     }
+    setId((prevId) => prevId + 1);
   };
+
+  console.log('tree', tree);
 
   return (
     <>
@@ -76,12 +77,14 @@ const index = () => {
           </div>
         </div>
         {tree.map((item, index) => {
-          if (item.type === 'folder') {
+          if (item?.type === 'folder') {
             return (
               <FolderItem
-                id={item.id}
-                nestedItems={item.nestedItems}
-                folderName={item.name}
+                tree={tree}
+                setTree={setTree}
+                id={item?.id}
+                nestedItems={item?.nestedItems}
+                folderName={item?.name}
                 setSelectedItem={setSelectedItem}
                 key={index}
               />
@@ -89,8 +92,12 @@ const index = () => {
           } else {
             return (
               <FileItem
-                fileName={item.name}
+                tree={tree}
+                setTree={setTree}
+                id={item?.id}
                 setSelectedItem={setSelectedItem}
+                nestedItems={item?.nestedItems}
+                fileName={item?.name}
                 key={index}
               />
             );

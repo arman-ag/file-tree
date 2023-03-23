@@ -1,23 +1,36 @@
+import { findValue } from '@/common/findValue';
 import { FormEvent, useState } from 'react';
 import { AiOutlineFile } from 'react-icons/ai';
 import { DiJavascript1 } from 'react-icons/di';
-export const FileItem = ({ fileName, setSelectedItem }) => {
+
+export const FileItem = ({
+  fileName,
+  setSelectedItem,
+  tree,
+  setTree,
+  id,
+  nestedItems,
+}) => {
   const [name, setName] = useState('');
   const [choseName, setChoseName] = useState(true);
+  console.log(fileName);
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setChoseName(false);
-    setTree((items) => items);
+    const result = findValue(tree, id);
+    result.name = name;
+    console.log(tree);
+    setTree([...tree]);
     setName('');
   };
   const addItem = (e) => {
     e.stopPropagation();
-    setSelectedItem(nestedItems.id);
+    // setSelectedItem(nestedItems.id);
   };
 
   return (
     <div onClick={(e) => addItem(e)}>
-      {!(fileName.length > 0) ? (
+      {choseName ? (
         <div className='flex items-baseline'>
           <AiOutlineFile className='mr-2' />
           <form onSubmit={(event) => submit(event)}>
