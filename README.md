@@ -10,4 +10,6 @@ yarn dev
 
 ```
 
-chose your Intended folder then you add file or folder there
+# to use app:
+
+first chose your Intended folder then you can add file or folder in there
